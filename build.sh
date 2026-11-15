@@ -2,23 +2,24 @@
 
 export DEBIAN_FRONTEND=noninteractive
 
-# 暴力覆盖 sources.list，彻底干掉 Azure 源和微软源
+# 彻底干掉 GitHub 默认的 Azure 源文件
+sudo rm -f /etc/apt/sources.list.d/* /etc/apt/sources.list
+
+# 写入纯净的 Ubuntu 24.04 官方源（如果嫌慢，可以把 archive.ubuntu.com 换成 mirrors.tuna.tsinghua.edu.cn/ubuntu 或 mirrors.aliyun.com/ubuntu）
 sudo bash -c 'cat << EOF > /etc/apt/sources.list
-deb http://archive.ubuntu.com/ubuntu/ jammy main restricted universe multiverse
-deb http://archive.ubuntu.com/ubuntu/ jammy-updates main restricted universe multiverse
-deb http://archive.ubuntu.com/ubuntu/ jammy-backports main restricted universe multiverse
-deb http://security.ubuntu.com/ubuntu/ jammy-security main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu noble main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu noble-updates main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu noble-backports main restricted universe multiverse
+deb http://security.ubuntu.com/ubuntu noble-security main restricted universe multiverse
 EOF'
 
-
-sudo echo "" > /etc/apt/apt-mirrors.txt
-sudo rm -f /etc/apt/sources.list.d/*
-
 sudo apt update
-
-
 sudo apt install -y sudo git android-sdk-platform-tools python-is-python3 python3-yaml qemu-utils
+
+# 注意：删掉了原版里的 libxml2，因为 24.04 里没有这个包，保留 libxml2-utils 即可
 sudo apt install -y bc bison build-essential ccache curl flex g++-multilib gcc-multilib git git-lfs gnupg gperf imagemagick protobuf-compiler python3-protobuf lib32readline-dev lib32z1-dev libdw-dev libelf-dev lz4 libsdl1.2-dev libssl-dev libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev
+
+# 此时官方源里已经有了，可以放心安装 meson-1.5
 sudo apt install -y meson-1.5 glslang-tools python3-mako
 git config --global user.name "github-actions[bot]"
 git config --global user.email "github-actions[bot]@users.noreply.github.com"
