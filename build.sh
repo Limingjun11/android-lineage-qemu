@@ -1,8 +1,12 @@
 #!/bin/bash
 
 export DEBIAN_FRONTEND=noninteractive
+
+# 强行把 Azure 镜像源替换为 Ubuntu 官方源
+sudo sed -i 's/azure.archive.ubuntu.com/archive.ubuntu.com/g' /etc/apt/sources.list
+
 sudo apt update
-sudo apt install -y sudo git android-sdk-platform-tools python-is-python3 python3-yaml qemu-utils
+sudo apt install -y sudo git android-sdk-platform-tools python-is-python3 python3-yaml qemu-utils # libncurses5
 sudo apt install -y bc bison build-essential ccache curl flex g++-multilib gcc-multilib git git-lfs gnupg gperf imagemagick protobuf-compiler python3-protobuf lib32readline-dev lib32z1-dev libdw-dev libelf-dev lz4 libsdl1.2-dev libssl-dev libxml2 libxml2-utils lzop pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev
 sudo apt install -y meson-1.5 glslang-tools python3-mako
 git config --global user.name "github-actions[bot]"
