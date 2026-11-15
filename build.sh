@@ -42,8 +42,19 @@ export PATH="$(realpath .)/bin:$PATH"
 cd android/lineage
 export PATH="$(realpath .)/prebuilts/sdk/tools/linux/bin/:$PATH"
 
-# ===== 关键修改：分支换成 lineage-20.0 (Android 13) =====
+# ... 前面的 repo init 保持不变 ...
 repo init -u https://github.com/LineageOS/android.git -b lineage-20.0 --git-lfs --no-clone-bundle --depth 1
+
+# ===== 强行加入 virtio_arm64only 仓库 =====
+mkdir -p .repo/local_manifests
+cat << EOF > .repo/local_manifests/virtio.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <project name="LineageOS/android_device_virt_virtio_arm64only" path="device/virt/virtio_arm64only" remote="github" revision="lineage-20" />
+</manifest>
+EOF
+
+# 然后再 sync
 repo sync -c --no-tags --prune --force-sync --fail-fast --retry-fetches=8 -j 32
 
 sed -i 's/-$(LINEAGE_BUILDTYPE)/-jqssun/g' vendor/lineage/config/version.mk
